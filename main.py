@@ -165,7 +165,7 @@ def main(page: ft.Page):
             controls=[
                 ft.Text("数据提取与拟合", size=20, weight=ft.FontWeight.W_800, color=ft.Colors.BLUE_GREY_800),
                 ft.ElevatedButton(
-                    text="选择 Excel 提取", icon=ft.Icons.FILE_UPLOAD,
+                    "选择 Excel 提取", icon=ft.Icons.FILE_UPLOAD,
                     bgcolor=ft.Colors.BLUE_100, color=ft.Colors.BLUE_900, height=45,
                     on_click=lambda _: file_picker.pick_files(allowed_extensions=["xlsx"])
                 ),
