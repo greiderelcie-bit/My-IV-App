@@ -13,16 +13,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Java (Android 打包所需)
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
-
-      - name: Setup Flutter (核心修复：增加 Flutter 环境)
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -35,7 +30,8 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build APK using Flet
-        run: flet build apk
+        # 核心修改：利用 yes 命令自动回复 y，跳过拦截提示
+        run: yes | flet build apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
