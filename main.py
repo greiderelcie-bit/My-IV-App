@@ -152,7 +152,8 @@ def main(page: ft.Page):
 
         page.update()
 
-    file_picker = ft.FilePicker(on_result=process_excel_file)
+    file_picker = ft.FilePicker()
+    file_picker.on_result = process_excel_file
     page.overlay.append(file_picker)
 
     # 4. 页面排版
