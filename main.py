@@ -14,7 +14,7 @@ def main(page: ft.Page):
     # 2. 界面组件定义
     chart_container = ft.Container(
         content=ft.Text("请先提取 Excel 数据以生成图表", color=ft.Colors.GREY_400),
-        alignment=ft.alignment.center,
+        alignment=ft.Alignment(0, 0),
         height=300,  # 固定高度适配手机屏幕
         bgcolor=ft.Colors.WHITE,
         border_radius=12,
