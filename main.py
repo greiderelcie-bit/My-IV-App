@@ -111,8 +111,7 @@ def main(page: ft.Page):
                 min_x=min(v_list), max_x=max(v_list),
                 min_y=min(min(i1_list), min(i2_list)), 
                 max_y=max(max(i1_list), max(i2_list)),
-                expand=True,
-                tooltip_bgcolor=ft.Colors.BLUE_GREY_800
+                expand=True
             )
 
             chart_container.content = chart
