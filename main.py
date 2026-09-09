@@ -4,37 +4,41 @@ import openpyxl
 def main(page: ft.Page):
     page.title = "I-V 数据提取与分析"
     
-    # 【修复1】整体垂直居中，增加内边距防刘海屏遮挡
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.padding = 20
-    page.bgcolor = ft.Colors.BLUE_GREY_50 
-    page.theme_mode = ft.ThemeMode.LIGHT
-    page.scroll = ft.ScrollMode.AUTO
+    # 【回退语法】0.22.1 支持的字符串对齐方式
+    page.vertical_alignment = "center"
+    page.horizontal_alignment = "center"
+    # 顶部留出 50 的空间，完美避开刘海屏
+    page.padding = ft.padding.only(top=50, left=20, right=20, bottom=20)
+    
+    # 【回退语法】所有颜色必须为小写 colors
+    page.bgcolor = ft.colors.BLUE_GREY_50 
+    page.theme_mode = "light"
+    page.scroll = "auto"
 
-    # 【修复2】修改提示文字
-    txt_fitting_result = ft.Text("拟合结果 y = 待计算", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_800)
+    # 【回退语法】字体粗细统一用小写字符串 "bold"
+    txt_fitting_result = ft.Text("拟合结果 y = 待计算", size=16, weight="bold", color=ft.colors.BLUE_800)
     log_text = ft.Text(value="", size=12)
     
     chart_container = ft.Container(
-        content=ft.Text("请先提取 Excel 数据以生成图表", color=ft.Colors.GREY_400),
-        alignment=ft.Alignment(0, 0),
+        content=ft.Text("请先提取 Excel 数据以生成图表", color=ft.colors.GREY_400),
+        alignment=ft.alignment.center,
         height=300,
-        bgcolor=ft.Colors.WHITE,
+        bgcolor=ft.colors.WHITE,
         border_radius=12,
         padding=10,
-        shadow=ft.BoxShadow(spread_radius=1, blur_radius=5, color=ft.Colors.GREY_300)
+        shadow=ft.BoxShadow(spread_radius=1, blur_radius=5, color=ft.colors.GREY_300)
     )
 
     process_dialog = ft.AlertDialog(
         modal=True,
         title=ft.Text("操作与进程提示"),
         content=ft.Container(
-            content=ft.Column([log_text], scroll=ft.ScrollMode.AUTO),
+            content=ft.Column([log_text], scroll="auto"),
             width=300, height=150
         ),
-        actions=[ft.TextButton("关闭", on_click=lambda e: close_dialog())],
-        actions_alignment=ft.MainAxisAlignment.END,
+        # 【回退语法】加回 text= 参数
+        actions=[ft.TextButton(text="关闭", on_click=lambda e: close_dialog())],
+        actions_alignment="end",
     )
 
     def open_dialog():
@@ -103,15 +107,15 @@ def main(page: ft.Page):
 
             chart = ft.LineChart(
                 data_series=[
-                    ft.LineChartData(data_points=chart_data_i1, stroke_width=2, color=ft.Colors.RED_400, curved=True),
-                    ft.LineChartData(data_points=chart_data_i2, stroke_width=2, color=ft.Colors.TEAL_400, curved=True)
+                    ft.LineChartData(data_points=chart_data_i1, stroke_width=2, color=ft.colors.RED_400, curved=True),
+                    ft.LineChartData(data_points=chart_data_i2, stroke_width=2, color=ft.colors.TEAL_400, curved=True)
                 ],
-                border=ft.border.all(1, ft.Colors.GREY_300),
+                border=ft.border.all(1, ft.colors.GREY_300),
                 min_x=min(v_list), max_x=max(v_list),
                 min_y=min(min(i1_list), min(i2_list)), 
                 max_y=max(max(i1_list), max(i2_list)),
                 expand=True,
-                tooltip_bgcolor=ft.Colors.BLUE_GREY_800
+                tooltip_bgcolor=ft.colors.BLUE_GREY_800
             )
 
             chart_container.content = chart
@@ -125,40 +129,36 @@ def main(page: ft.Page):
 
         page.update()
 
-    # 【修复3】回归正确挂载位置，并确保依赖生效
-    file_picker = ft.FilePicker()
-    file_picker.on_result = process_excel_file
+    # 【回退语法】0.22.1 支持在初始化时直接绑定事件
+    file_picker = ft.FilePicker(on_result=process_excel_file)
     page.overlay.append(file_picker)
 
     controls_panel = ft.Container(
-        bgcolor=ft.Colors.WHITE, padding=15, border_radius=12,
-        shadow=ft.BoxShadow(spread_radius=1, blur_radius=5, color=ft.Colors.GREY_300),
+        bgcolor=ft.colors.WHITE, padding=15, border_radius=12,
+        shadow=ft.BoxShadow(spread_radius=1, blur_radius=5, color=ft.colors.GREY_300),
         content=ft.Column(
             spacing=15,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            horizontal_alignment="center",
             controls=[
-                ft.Text("数据提取与拟合", size=20, weight=ft.FontWeight.W_800, color=ft.Colors.BLUE_GREY_800),
-                # 【修复4】修改按钮文字
+                ft.Text("数据提取与拟合", size=20, weight="bold", color=ft.colors.BLUE_GREY_800),
+                # 【回退语法】重新加回 text=，并且 icon 用小写的 icons
                 ft.ElevatedButton(
-                    "提取数据", 
-                    icon=ft.Icons.FILE_UPLOAD,
-                    bgcolor=ft.Colors.BLUE_100, color=ft.Colors.BLUE_900, height=45,
+                    text="提取数据", 
+                    icon=ft.icons.FILE_UPLOAD,
+                    bgcolor=ft.colors.BLUE_100, color=ft.colors.BLUE_900, height=45,
                     on_click=lambda _: file_picker.pick_files(allowed_extensions=["xlsx"])
                 ),
-                ft.Divider(color=ft.Colors.BLUE_GREY_100),
+                ft.Divider(color=ft.colors.BLUE_GREY_100),
                 txt_fitting_result
             ]
         )
     )
 
-    # 渲染最终界面 (加入 SafeArea 适配移动端特性)
     page.add(
-        ft.SafeArea(
-            content=ft.Column(
-                expand=True, spacing=20,
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                controls=[controls_panel, chart_container]
-            )
+        ft.Column(
+            expand=True, spacing=20,
+            horizontal_alignment="center",
+            controls=[controls_panel, chart_container]
         )
     )
 
