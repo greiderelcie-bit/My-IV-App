@@ -139,7 +139,7 @@ def main(page: ft.Page):
                 ft.Text("数据提取与拟合", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_GREY_800),
                 ft.ElevatedButton(
                     "提取数据", # 已修复 TextButton 和 ElevatedButton 的语法
-                    icon=ft.icons.FILE_UPLOAD,
+                    icon="file_upload",
                     bgcolor=ft.Colors.BLUE_100, color=ft.Colors.BLUE_900, height=45,
                     on_click=process_excel_file # 直接调用处理函数
                 ),
