@@ -49,9 +49,9 @@ def main(page: ft.Page):
         page.update()
 
     # 核心修改：直接在这里呼出选择器并获取结果
-    def process_excel_file(e):
+    async def process_excel_file(e):
         # 最新版写法：直接调用系统服务选择文件，阻塞直到选择完成
-        files = ft.FilePicker().pick_files(allowed_extensions=["xlsx"])
+        files = await ft.FilePicker().pick_files(allowed_extensions=["xlsx"])
         
         if not files: # 如果用户点击了取消
             return
