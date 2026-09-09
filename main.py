@@ -2,15 +2,20 @@ import flet as ft
 import openpyxl
 
 def main(page: ft.Page):
-    # 界面基础设置
     page.title = "I-V 数据提取与分析"
-    page.window.width = 400
-    page.window.height = 750
+    
+    # 【修复1】整体垂直居中，增加内边距防刘海屏遮挡
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.padding = 20
     page.bgcolor = ft.Colors.BLUE_GREY_50 
     page.theme_mode = ft.ThemeMode.LIGHT
     page.scroll = ft.ScrollMode.AUTO
 
-    # 图表容器 (修正了 alignment 属性)
+    # 【修复2】修改提示文字
+    txt_fitting_result = ft.Text("拟合结果 y = 待计算", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_800)
+    log_text = ft.Text(value="", size=12)
+    
     chart_container = ft.Container(
         content=ft.Text("请先提取 Excel 数据以生成图表", color=ft.Colors.GREY_400),
         alignment=ft.Alignment(0, 0),
@@ -21,10 +26,6 @@ def main(page: ft.Page):
         shadow=ft.BoxShadow(spread_radius=1, blur_radius=5, color=ft.Colors.GREY_300)
     )
 
-    txt_fitting_result = ft.Text("1V 拟合结果 y = 待计算", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_800)
-    log_text = ft.Text(value="", size=12)
-    
-    # 弹窗提示
     process_dialog = ft.AlertDialog(
         modal=True,
         title=ft.Text("操作与进程提示"),
@@ -49,7 +50,6 @@ def main(page: ft.Page):
         log_text.value += f"> {msg}\n"
         page.update()
 
-    # 核心处理逻辑
     def process_excel_file(e: ft.FilePickerResultEvent):
         if not e.files:
             return
@@ -60,7 +60,7 @@ def main(page: ft.Page):
         append_log(f"1. 选择文件: {e.files[0].name}")
         
         try:
-            append_log("2. 正在通过 openpyxl 读取数据...")
+            append_log("2. 正在读取数据...")
             wb = openpyxl.load_workbook(filepath, data_only=True)
             sheet = wb.active
 
@@ -69,7 +69,6 @@ def main(page: ft.Page):
             min_v_diff = float('inf')
             target_v_result = 0.0
 
-            append_log("3. 提取电压、I1、I2 并过滤表头文字...")
             for row in sheet.iter_rows(values_only=True):
                 if not row or len(row) < 3:
                     continue
@@ -89,43 +88,23 @@ def main(page: ft.Page):
                         min_v_diff = diff
                         closest_v = v
                         target_v_result = y
-
                 except (ValueError, TypeError):
                     continue 
 
             if not v_list:
-                append_log("❌ 未在表格中找到有效的数字数据！")
+                append_log("❌ 未在表格中找到有效数据！")
                 page.update()
                 return
 
-            append_log("4. 数据计算完成。")
-
-            print("\n" + "="*55)
-            print("各电压下的数据与拟合结果如下：")
-            for r in results:
-                print(f"电压: {r[0]:>6.2f} V  =>  x = {r[1]:>8.5f},  y = {r[2]:>8.5f}")
-            print("="*55 + "\n")
-            append_log("5. 结果已输出至后台终端。")
-
-            append_log("6. 正在生成原生交互式图表...")
+            append_log("3. 数据提取与计算完成。")
             
             chart_data_i1 = [ft.LineChartDataPoint(v, i1) for v, i1 in zip(v_list, i1_list)]
             chart_data_i2 = [ft.LineChartDataPoint(v, i2) for v, i2 in zip(v_list, i2_list)]
 
             chart = ft.LineChart(
                 data_series=[
-                    ft.LineChartData(
-                        data_points=chart_data_i1,
-                        stroke_width=2,
-                        color=ft.Colors.RED_400,
-                        curved=True, 
-                    ),
-                    ft.LineChartData(
-                        data_points=chart_data_i2,
-                        stroke_width=2,
-                        color=ft.Colors.TEAL_400,
-                        curved=True,
-                    )
+                    ft.LineChartData(data_points=chart_data_i1, stroke_width=2, color=ft.Colors.RED_400, curved=True),
+                    ft.LineChartData(data_points=chart_data_i2, stroke_width=2, color=ft.Colors.TEAL_400, curved=True)
                 ],
                 border=ft.border.all(1, ft.Colors.GREY_300),
                 min_x=min(v_list), max_x=max(v_list),
@@ -136,33 +115,32 @@ def main(page: ft.Page):
             )
 
             chart_container.content = chart
-            
             if closest_v is not None:
-                txt_fitting_result.value = f"(实际 {closest_v:.2f}V) 1V 拟合结果 y = {target_v_result:.5f}"
+                txt_fitting_result.value = f"(实际 {closest_v:.2f}V) 拟合结果 y = {target_v_result:.5f}"
 
-            append_log("7. ✅ 操作完成！可以关闭此对话框。")
+            append_log("4. ✅ 操作完成！请关闭此窗口查看图表。")
 
         except Exception as ex:
             append_log(f"❌ 发生异常: {str(ex)}")
 
         page.update()
 
-    # 文件选择器 (修正了初始化逻辑)
+    # 【修复3】回归正确挂载位置，并确保依赖生效
     file_picker = ft.FilePicker()
     file_picker.on_result = process_excel_file
-    page.services.append(file_picker)
+    page.overlay.append(file_picker)
 
-    # 页面排版
     controls_panel = ft.Container(
         bgcolor=ft.Colors.WHITE, padding=15, border_radius=12,
         shadow=ft.BoxShadow(spread_radius=1, blur_radius=5, color=ft.Colors.GREY_300),
         content=ft.Column(
             spacing=15,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             controls=[
                 ft.Text("数据提取与拟合", size=20, weight=ft.FontWeight.W_800, color=ft.Colors.BLUE_GREY_800),
-                # 修正了 Elevated 按钮，移除了 text= 参数
+                # 【修复4】修改按钮文字
                 ft.ElevatedButton(
-                    "选择 Excel 提取", 
+                    "提取数据", 
                     icon=ft.Icons.FILE_UPLOAD,
                     bgcolor=ft.Colors.BLUE_100, color=ft.Colors.BLUE_900, height=45,
                     on_click=lambda _: file_picker.pick_files(allowed_extensions=["xlsx"])
@@ -173,10 +151,14 @@ def main(page: ft.Page):
         )
     )
 
+    # 渲染最终界面 (加入 SafeArea 适配移动端特性)
     page.add(
-        ft.Column(
-            expand=True, spacing=20,
-            controls=[controls_panel, chart_container]
+        ft.SafeArea(
+            content=ft.Column(
+                expand=True, spacing=20,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                controls=[controls_panel, chart_container]
+            )
         )
     )
 
