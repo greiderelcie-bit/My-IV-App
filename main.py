@@ -116,14 +116,14 @@ def main(page: ft.Page):
                 left_axis=fch.ChartAxis(
                     title=ft.Text("Current (A)", size=12, weight=ft.FontWeight.BOLD),
                     title_size=24,
-                    labels_size=50, # 给 Y 轴的数字刻度留出 50 像素的宽度空间
+                    label_size=50, # 给 Y 轴的数字刻度留出 50 像素的宽度空间
                 ),
                 
                 # 新增：X 轴 (电压坐标与数值)
                 bottom_axis=fch.ChartAxis(
                     title=ft.Text("Voltage (V)", size=12, weight=ft.FontWeight.BOLD),
                     title_size=24,
-                    labels_size=30, # 给 X 轴的数字刻度留出 30 像素的高度空间
+                    label_size=30, # 给 X 轴的数字刻度留出 30 像素的高度空间
                 )
             )
                 # 新增：给图表上方加一个主标题，并将它们一起放进容器
