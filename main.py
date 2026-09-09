@@ -1,5 +1,4 @@
 import flet as ft
-import flet_file_picker  # <-- 新增这一行，强制注册底层插件
 import openpyxl
 
 
