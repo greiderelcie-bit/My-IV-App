@@ -1,4 +1,5 @@
 import flet as ft
+import flet_charts as fch
 import openpyxl
 
 def main(page: ft.Page):
@@ -48,12 +49,10 @@ def main(page: ft.Page):
         log_text.value += f"> {msg}\n"
         page.update()
 
-    # 核心修改：直接在这里呼出选择器并获取结果
     async def process_excel_file(e):
-        # 最新版写法：直接调用系统服务选择文件，阻塞直到选择完成
         files = await ft.FilePicker().pick_files(allowed_extensions=["xlsx"])
         
-        if not files: # 如果用户点击了取消
+        if not files: 
             return
         
         filepath = files[0].path
@@ -100,13 +99,14 @@ def main(page: ft.Page):
 
             append_log("3. 数据提取与计算完成。")
             
-            chart_data_i1 = [ft.LineChartDataPoint(v, i1) for v, i1 in zip(v_list, i1_list)]
-            chart_data_i2 = [ft.LineChartDataPoint(v, i2) for v, i2 in zip(v_list, i2_list)]
+            # --- 这里所有的图表组件都已经为你改为了 fch. 专属库 ---
+            chart_data_i1 = [fch.LineChartDataPoint(v, i1) for v, i1 in zip(v_list, i1_list)]
+            chart_data_i2 = [fch.LineChartDataPoint(v, i2) for v, i2 in zip(v_list, i2_list)]
 
-            chart = ft.LineChart(
+            chart = fch.LineChart(
                 data_series=[
-                    ft.LineChartData(data_points=chart_data_i1, stroke_width=2, color=ft.Colors.RED_400, curved=True),
-                    ft.LineChartData(data_points=chart_data_i2, stroke_width=2, color=ft.Colors.TEAL_400, curved=True)
+                    fch.LineChartData(data_points=chart_data_i1, stroke_width=2, color=ft.Colors.RED_400, curved=True),
+                    fch.LineChartData(data_points=chart_data_i2, stroke_width=2, color=ft.Colors.TEAL_400, curved=True)
                 ],
                 border=ft.border.all(1, ft.Colors.GREY_300),
                 min_x=min(v_list), max_x=max(v_list),
@@ -127,8 +127,6 @@ def main(page: ft.Page):
 
         page.update()
 
-    # 此处已删除旧版的 file_picker 相关的 overlay 挂载逻辑
-
     controls_panel = ft.Container(
         bgcolor=ft.Colors.WHITE, padding=15, border_radius=12,
         shadow=ft.BoxShadow(spread_radius=1, blur_radius=5, color=ft.Colors.GREY_300),
@@ -138,10 +136,10 @@ def main(page: ft.Page):
             controls=[
                 ft.Text("数据提取与拟合", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_GREY_800),
                 ft.ElevatedButton(
-                    "提取数据", # 已修复 TextButton 和 ElevatedButton 的语法
+                    "提取数据", 
                     icon="upload_file",
                     bgcolor=ft.Colors.BLUE_100, color=ft.Colors.BLUE_900, height=45,
-                    on_click=process_excel_file # 直接调用处理函数
+                    on_click=process_excel_file 
                 ),
                 ft.Divider(color=ft.Colors.BLUE_GREY_100),
                 txt_fitting_result
