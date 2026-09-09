@@ -108,7 +108,6 @@ def main(page: ft.Page):
                     fch.LineChartData(points=chart_data_i1, stroke_width=2, color=ft.Colors.RED_400, curved=True),
                     fch.LineChartData(points=chart_data_i2, stroke_width=2, color=ft.Colors.TEAL_400, curved=True)
                 ],
-                border=ft.border.all(1, ft.Colors.GREY_300),
                 min_x=min(v_list), max_x=max(v_list),
                 min_y=min(min(i1_list), min(i2_list)), 
                 max_y=max(max(i1_list), max(i2_list)),
