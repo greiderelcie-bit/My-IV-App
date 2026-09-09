@@ -127,16 +127,13 @@ def main(page: ft.Page):
                 )
             )
                 # 新增：给图表上方加一个主标题，并将它们一起放进容器
-                chart_container.content = ft.Column(
-                    controls=[
-                        ft.Text("I-V 特性曲线", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_GREY_800),
-                        chart
-                    ],
-                    horizontal_alignment=ft.CrossAxisAlignment.CENTER
-                )
-            )
-
-            chart_container.content = chart
+            chart_container.content = ft.Column(
+                controls=[
+                    ft.Text("I-V 特性曲线", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_GREY_800),
+                    chart
+                ],
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER
+            )   
             if closest_v is not None:
                 txt_fitting_result.value = f"(实际 {closest_v:.2f}V) 拟合结果 y = {target_v_result:.5f}"
 
