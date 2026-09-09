@@ -4,21 +4,19 @@ import openpyxl
 def main(page: ft.Page):
     page.title = "I-V 数据提取与分析"
     
-    # 【严格老语法】必须使用完整的枚举类型
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.padding = 30  # 统一加大内边距，防刘海屏遮挡
+    page.padding = 30
     page.bgcolor = ft.colors.BLUE_GREY_50 
     page.theme_mode = ft.ThemeMode.LIGHT
     page.scroll = ft.ScrollMode.AUTO
 
-    # 【严格老语法】字体加粗必须使用 ft.FontWeight.BOLD
     txt_fitting_result = ft.Text("拟合结果 y = 待计算", size=16, weight=ft.FontWeight.BOLD, color=ft.colors.BLUE_800)
     log_text = ft.Text(value="", size=12)
     
     chart_container = ft.Container(
         content=ft.Text("请先提取 Excel 数据以生成图表", color=ft.colors.GREY_400),
-        alignment=ft.Alignment(0, 0),  # 最原始的坐标对齐法，绝不报错
+        alignment=ft.Alignment(0, 0), 
         height=300,
         bgcolor=ft.colors.WHITE,
         border_radius=12,
