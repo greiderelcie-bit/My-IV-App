@@ -7,21 +7,21 @@ def main(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.padding = 30
-    page.bgcolor = ft.colors.BLUE_GREY_50 
+    page.bgcolor = ft.Colors.BLUE_GREY_50 
     page.theme_mode = ft.ThemeMode.LIGHT
     page.scroll = ft.ScrollMode.AUTO
 
-    txt_fitting_result = ft.Text("拟合结果 y = 待计算", size=16, weight=ft.FontWeight.BOLD, color=ft.colors.BLUE_800)
+    txt_fitting_result = ft.Text("拟合结果 y = 待计算", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_800)
     log_text = ft.Text(value="", size=12)
     
     chart_container = ft.Container(
-        content=ft.Text("请先提取 Excel 数据以生成图表", color=ft.colors.GREY_400),
+        content=ft.Text("请先提取 Excel 数据以生成图表", color=ft.Colors.GREY_400),
         alignment=ft.Alignment(0, 0), 
         height=300,
-        bgcolor=ft.colors.WHITE,
+        bgcolor=ft.Colors.WHITE,
         border_radius=12,
         padding=10,
-        shadow=ft.BoxShadow(spread_radius=1, blur_radius=5, color=ft.colors.GREY_300)
+        shadow=ft.BoxShadow(spread_radius=1, blur_radius=5, color=ft.Colors.GREY_300)
     )
 
     process_dialog = ft.AlertDialog(
@@ -101,15 +101,15 @@ def main(page: ft.Page):
 
             chart = ft.LineChart(
                 data_series=[
-                    ft.LineChartData(data_points=chart_data_i1, stroke_width=2, color=ft.colors.RED_400, curved=True),
-                    ft.LineChartData(data_points=chart_data_i2, stroke_width=2, color=ft.colors.TEAL_400, curved=True)
+                    ft.LineChartData(data_points=chart_data_i1, stroke_width=2, color=ft.Colors.RED_400, curved=True),
+                    ft.LineChartData(data_points=chart_data_i2, stroke_width=2, color=ft.Colors.TEAL_400, curved=True)
                 ],
-                border=ft.border.all(1, ft.colors.GREY_300),
+                border=ft.border.all(1, ft.Colors.GREY_300),
                 min_x=min(v_list), max_x=max(v_list),
                 min_y=min(min(i1_list), min(i2_list)), 
                 max_y=max(max(i1_list), max(i2_list)),
                 expand=True,
-                tooltip_bgcolor=ft.colors.BLUE_GREY_800
+                tooltip_bgcolor=ft.Colors.BLUE_GREY_800
             )
 
             chart_container.content = chart
@@ -127,20 +127,20 @@ def main(page: ft.Page):
     page.overlay.append(file_picker)
 
     controls_panel = ft.Container(
-        bgcolor=ft.colors.WHITE, padding=15, border_radius=12,
-        shadow=ft.BoxShadow(spread_radius=1, blur_radius=5, color=ft.colors.GREY_300),
+        bgcolor=ft.Colors.WHITE, padding=15, border_radius=12,
+        shadow=ft.BoxShadow(spread_radius=1, blur_radius=5, color=ft.Colors.GREY_300),
         content=ft.Column(
             spacing=15,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             controls=[
-                ft.Text("数据提取与拟合", size=20, weight=ft.FontWeight.BOLD, color=ft.colors.BLUE_GREY_800),
+                ft.Text("数据提取与拟合", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_GREY_800),
                 ft.ElevatedButton(
                     text="提取数据", 
                     icon=ft.icons.FILE_UPLOAD,
-                    bgcolor=ft.colors.BLUE_100, color=ft.colors.BLUE_900, height=45,
+                    bgcolor=ft.Colors.BLUE_100, color=ft.Colors.BLUE_900, height=45,
                     on_click=lambda _: file_picker.pick_files(allowed_extensions=["xlsx"])
                 ),
-                ft.Divider(color=ft.colors.BLUE_GREY_100),
+                ft.Divider(color=ft.Colors.BLUE_GREY_100),
                 txt_fitting_result
             ]
         )
