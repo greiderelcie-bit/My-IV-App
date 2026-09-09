@@ -112,28 +112,32 @@ def main(page: ft.Page):
                 min_y=min(min(i1_list), min(i2_list)), 
                 max_y=max(max(i1_list), max(i2_list)),
                 expand=True,
-                # 新增：Y 轴 (电流坐标与数值)
+                
+                # 新增：X轴与Y轴的辅助网格线（浅灰色虚线）
+                horizontal_grid_lines=fch.ChartGridLines(width=1, color=ft.Colors.GREY_300, dash_pattern=[5, 5]),
+                vertical_grid_lines=fch.ChartGridLines(width=1, color=ft.Colors.GREY_300, dash_pattern=[5, 5]),
+                
+                # 修改：Y 轴 (隐藏乱码般的数字，只保留 Current 标题)
                 left_axis=fch.ChartAxis(
                     title=ft.Text("Current (A)", size=12, weight=ft.FontWeight.BOLD),
                     title_size=24,
-                    label_size=50, # 给 Y 轴的数字刻度留出 50 像素的宽度空间
+                    show_labels=False, # <--- 核心修改：关掉自动生成的乱码数字
                 ),
                 
-                # 新增：X 轴 (电压坐标与数值)
+                # X 轴保持不变
                 bottom_axis=fch.ChartAxis(
                     title=ft.Text("Voltage (V)", size=12, weight=ft.FontWeight.BOLD),
                     title_size=24,
-                    label_size=30, # 给 X 轴的数字刻度留出 30 像素的高度空间
+                    label_size=30, 
                 )
             )
-                # 新增：给图表上方加一个主标题，并将它们一起放进容器
             chart_container.content = ft.Column(
                 controls=[
                     ft.Text("I-V 特性曲线", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_GREY_800),
                     chart
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER
-            )   
+            )
             if closest_v is not None:
                 txt_fitting_result.value = f"(实际 {closest_v:.2f}V) 拟合结果 y = {target_v_result:.5f}"
 
