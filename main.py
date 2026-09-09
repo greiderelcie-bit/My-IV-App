@@ -48,14 +48,18 @@ def main(page: ft.Page):
         log_text.value += f"> {msg}\n"
         page.update()
 
-    def process_excel_file(e: ft.FilePickerResultEvent):
-        if not e.files:
+    # 核心修改：直接在这里呼出选择器并获取结果
+    def process_excel_file(e):
+        # 最新版写法：直接调用系统服务选择文件，阻塞直到选择完成
+        files = ft.FilePicker().pick_files(allowed_extensions=["xlsx"])
+        
+        if not files: # 如果用户点击了取消
             return
         
-        filepath = e.files[0].path
+        filepath = files[0].path
         log_text.value = "" 
         open_dialog()
-        append_log(f"1. 选择文件: {e.files[0].name}")
+        append_log(f"1. 选择文件: {files[0].name}")
         
         try:
             append_log("2. 正在读取数据...")
@@ -123,8 +127,7 @@ def main(page: ft.Page):
 
         page.update()
 
-    file_picker = ft.FilePicker(on_result=process_excel_file)
-    page.overlay.append(file_picker)
+    # 此处已删除旧版的 file_picker 相关的 overlay 挂载逻辑
 
     controls_panel = ft.Container(
         bgcolor=ft.Colors.WHITE, padding=15, border_radius=12,
@@ -135,10 +138,10 @@ def main(page: ft.Page):
             controls=[
                 ft.Text("数据提取与拟合", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_GREY_800),
                 ft.ElevatedButton(
-                    text="提取数据", 
+                    "提取数据", # 已修复 TextButton 和 ElevatedButton 的语法
                     icon=ft.icons.FILE_UPLOAD,
                     bgcolor=ft.Colors.BLUE_100, color=ft.Colors.BLUE_900, height=45,
-                    on_click=lambda _: file_picker.pick_files(allowed_extensions=["xlsx"])
+                    on_click=process_excel_file # 直接调用处理函数
                 ),
                 ft.Divider(color=ft.Colors.BLUE_GREY_100),
                 txt_fitting_result
