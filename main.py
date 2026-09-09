@@ -111,7 +111,29 @@ def main(page: ft.Page):
                 min_x=min(v_list), max_x=max(v_list),
                 min_y=min(min(i1_list), min(i2_list)), 
                 max_y=max(max(i1_list), max(i2_list)),
-                expand=True
+                expand=True,
+                # 新增：Y 轴 (电流坐标与数值)
+                left_axis=fch.ChartAxis(
+                    title=ft.Text("Current (A)", size=12, weight=ft.FontWeight.BOLD),
+                    title_size=24,
+                    labels_size=50, # 给 Y 轴的数字刻度留出 50 像素的宽度空间
+                ),
+                
+                # 新增：X 轴 (电压坐标与数值)
+                bottom_axis=fch.ChartAxis(
+                    title=ft.Text("Voltage (V)", size=12, weight=ft.FontWeight.BOLD),
+                    title_size=24,
+                    labels_size=30, # 给 X 轴的数字刻度留出 30 像素的高度空间
+                )
+            )
+                # 新增：给图表上方加一个主标题，并将它们一起放进容器
+                chart_container.content = ft.Column(
+                    controls=[
+                        ft.Text("I-V 特性曲线", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_GREY_800),
+                        chart
+                    ],
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                )
             )
 
             chart_container.content = chart
