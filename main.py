@@ -150,7 +150,7 @@ def main(page: ft.Page):
     # 文件选择器 (修正了初始化逻辑)
     file_picker = ft.FilePicker()
     file_picker.on_result = process_excel_file
-    page.overlay.append(file_picker)
+    page.services.append(file_picker)
 
     # 页面排版
     controls_panel = ft.Container(
