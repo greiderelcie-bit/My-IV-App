@@ -30,13 +30,13 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Python Dependencies
+      - name: Install Build Tools (修复核心：在服务器全局安装 Flet 打包器)
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install flet==0.22.1
 
-      - name: Build APK using Flet
-        run: flet build apk
+      - name: Build APK using Flet (明确打包当前目录)
+        run: flet build apk .
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
