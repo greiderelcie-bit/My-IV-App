@@ -4,24 +4,21 @@ import openpyxl
 def main(page: ft.Page):
     page.title = "I-V 数据提取与分析"
     
-    # 【回退语法】0.22.1 支持的字符串对齐方式
-    page.vertical_alignment = "center"
-    page.horizontal_alignment = "center"
-    # 顶部留出 50 的空间，完美避开刘海屏
-    page.padding = ft.padding.only(top=50, left=20, right=20, bottom=20)
-    
-    # 【回退语法】所有颜色必须为小写 colors
+    # 【严格老语法】必须使用完整的枚举类型
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.padding = 30  # 统一加大内边距，防刘海屏遮挡
     page.bgcolor = ft.colors.BLUE_GREY_50 
-    page.theme_mode = "light"
-    page.scroll = "auto"
+    page.theme_mode = ft.ThemeMode.LIGHT
+    page.scroll = ft.ScrollMode.AUTO
 
-    # 【回退语法】字体粗细统一用小写字符串 "bold"
-    txt_fitting_result = ft.Text("拟合结果 y = 待计算", size=16, weight="bold", color=ft.colors.BLUE_800)
+    # 【严格老语法】字体加粗必须使用 ft.FontWeight.BOLD
+    txt_fitting_result = ft.Text("拟合结果 y = 待计算", size=16, weight=ft.FontWeight.BOLD, color=ft.colors.BLUE_800)
     log_text = ft.Text(value="", size=12)
     
     chart_container = ft.Container(
         content=ft.Text("请先提取 Excel 数据以生成图表", color=ft.colors.GREY_400),
-        alignment=ft.alignment.center,
+        alignment=ft.Alignment(0, 0),  # 最原始的坐标对齐法，绝不报错
         height=300,
         bgcolor=ft.colors.WHITE,
         border_radius=12,
@@ -33,12 +30,11 @@ def main(page: ft.Page):
         modal=True,
         title=ft.Text("操作与进程提示"),
         content=ft.Container(
-            content=ft.Column([log_text], scroll="auto"),
+            content=ft.Column([log_text], scroll=ft.ScrollMode.AUTO),
             width=300, height=150
         ),
-        # 【回退语法】加回 text= 参数
         actions=[ft.TextButton(text="关闭", on_click=lambda e: close_dialog())],
-        actions_alignment="end",
+        actions_alignment=ft.MainAxisAlignment.END,
     )
 
     def open_dialog():
@@ -129,7 +125,6 @@ def main(page: ft.Page):
 
         page.update()
 
-    # 【回退语法】0.22.1 支持在初始化时直接绑定事件
     file_picker = ft.FilePicker(on_result=process_excel_file)
     page.overlay.append(file_picker)
 
@@ -138,10 +133,9 @@ def main(page: ft.Page):
         shadow=ft.BoxShadow(spread_radius=1, blur_radius=5, color=ft.colors.GREY_300),
         content=ft.Column(
             spacing=15,
-            horizontal_alignment="center",
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             controls=[
-                ft.Text("数据提取与拟合", size=20, weight="bold", color=ft.colors.BLUE_GREY_800),
-                # 【回退语法】重新加回 text=，并且 icon 用小写的 icons
+                ft.Text("数据提取与拟合", size=20, weight=ft.FontWeight.BOLD, color=ft.colors.BLUE_GREY_800),
                 ft.ElevatedButton(
                     text="提取数据", 
                     icon=ft.icons.FILE_UPLOAD,
@@ -157,7 +151,7 @@ def main(page: ft.Page):
     page.add(
         ft.Column(
             expand=True, spacing=20,
-            horizontal_alignment="center",
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             controls=[controls_panel, chart_container]
         )
     )
