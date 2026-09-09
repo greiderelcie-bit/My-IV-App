@@ -19,6 +19,11 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
+      - name: Setup Flutter (为老版本 Flet 提供底层环境)
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -30,7 +35,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build APK using Flet
-        run: yes | flet build apk
+        run: flet build apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
