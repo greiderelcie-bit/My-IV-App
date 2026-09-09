@@ -31,7 +31,7 @@ def main(page: ft.Page):
             content=ft.Column([log_text], scroll=ft.ScrollMode.AUTO),
             width=300, height=150
         ),
-        actions=[ft.TextButton(text="关闭", on_click=lambda e: close_dialog())],
+        actions=[ft.TextButton("关闭", on_click=lambda e: close_dialog())],
         actions_alignment=ft.MainAxisAlignment.END,
     )
 
