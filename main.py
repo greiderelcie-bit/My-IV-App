@@ -139,8 +139,7 @@ def main(page: ft.Page):
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER
             )
             if closest_v is not None:
-                txt_fitting_result.value = f"(实际 {closest_v:.2f}V) 拟合结果 y = {target_v_result:.5f}"
-
+                txt_fitting_result.value = f"样品浓度为 {target_v_result:.5f} ppt"
             append_log("4. ✅ 操作完成！请关闭此窗口查看图表。")
 
         except Exception as ex:
